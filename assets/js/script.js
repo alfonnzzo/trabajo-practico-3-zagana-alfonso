@@ -108,7 +108,9 @@ function renderizarPersonajes(personajes) {
 
   contenedorData.appendChild(fragment);
 }
-// --- Alerta de "Ver más" ---
+
+
+// --- Detalles individuales ---
 async function verDetalles(id) {
   try {
     const res = await fetch(`${API_BASE}/${id}`);
