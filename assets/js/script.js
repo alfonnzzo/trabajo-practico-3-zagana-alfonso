@@ -1,6 +1,3 @@
-// assets/js/script.js
-
-// --- Selectores y constantes ---
 const inputBusqueda  = document.getElementById('input-busqueda');
 const contenedorData = document.getElementById('contenedor-data');
 const API_BASE       = 'https://dragonball-api.com/api/characters';
@@ -13,13 +10,13 @@ async function buscar(event) {
   mostrarLoading(q ? 'Buscando personajes…' : 'Cargando personajes…');
 
   const endpoint = q 
-    ? `${API_BASE}?name=${encodeURIComponent(q)}` 
+    ? `${API_BASE}?name=${encodeURIComponent(q)}`
     : API_BASE;
 
   const personajes = await cargarDatos(endpoint);
   if (personajes.length === 0) {
     mostrarMensaje(q 
-      ? `No se encontraron personajes para “${q}”.` 
+      ? `No se encontraron personajes para “${q}”.`
       : 'No hay personajes disponibles.');
   } else {
     renderizarPersonajes(personajes);
@@ -30,8 +27,8 @@ async function buscar(event) {
 window.addEventListener('DOMContentLoaded', async () => {
   mostrarLoading('Cargando personajes…');
   const personajes = await cargarDatos(API_BASE);
-  personajes.length 
-    ? renderizarPersonajes(personajes) 
+  personajes.length
+    ? renderizarPersonajes(personajes)
     : mostrarMensaje('No se encontraron personajes.');
 });
 
@@ -71,8 +68,8 @@ async function cargarDatos(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
-    return Array.isArray(json.items) 
-      ? json.items 
+    return Array.isArray(json.items)
+      ? json.items
       : (Array.isArray(json) ? json : []);
   } catch (err) {
     console.error('API error:', err);
@@ -86,19 +83,23 @@ function renderizarPersonajes(personajes) {
   clearResults();
   const fragment = document.createDocumentFragment();
 
-  personajes.forEach(p => {
-    const { id, name, image, race, gender } = p;
+  personajes.forEach(personaje => {
+    const { id, name, image, race, gender } = personaje;
     const col = document.createElement('div');
-    col.className = 'col-md-3 pb-2 d-flex justify-content-center';
+    col.classList.add('col-md-3', 'mb-4');
     col.dataset.id = id;
     col.innerHTML = `
-      <div class="card shadow-sm">
-        <img src="${image}" class="card-img-top" alt="${name}">
-        <div class="card-body text-center">
+      <div class="card shadow-sm p-3 border rounded text-center bg-light h-100">
+        <div class="card-body">
           <h5 class="card-title">${name}</h5>
-          <p class="card-text">
-            ${race || 'Raza desconocida'} — ${gender || 'Género desconocido'}
-          </p>
+          <img
+            src="${image}"
+            alt="${name}"
+            class="img-fluid rounded mb-2"
+            style="max-height: 200px;"
+          />
+          <p><strong>Raza:</strong> ${race}</p>
+          <p><strong>Género:</strong> ${gender}</p>
           <button class="btn btn-success btn-ver-detalles">Ver más</button>
         </div>
       </div>`;
@@ -107,8 +108,7 @@ function renderizarPersonajes(personajes) {
 
   contenedorData.appendChild(fragment);
 }
-
-// --- Detalles individuales ---
+// --- Alerta de "Ver más" ---
 async function verDetalles(id) {
   try {
     const res = await fetch(`${API_BASE}/${id}`);
